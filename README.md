@@ -16,6 +16,11 @@ We historically added feature that weren't there in the upstream datadog plugin.
 
 Agent bootstrap time, emitted as jenkins.computer.bootstrap / jenkins.agent.bootstrap - both names since "computer" is the new official wording for all things regarding build nodes in the datadog plugin, but we used "agent" earlier and its used on dashboards.
 
+**Update our Fizz instances to use a new version of this plugin**
+
+- Once you're done with your changes, test them by running: `docker run -it --rm --name my-project -v "$(pwd)":/root -w /root adoptopenjdk/maven-openjdk8:latest mvn verify`.
+- Then, you need to update both [jenkins-datadog-plugin-private](https://github.com/Scout24/jenkins-datadog-plugin-private) and [Fizz-service](https://github.com/Scout24/fizz-service). Follow the [instructions here](https://github.com/Scout24/jenkins-datadog-plugin-private#updating).
+
 ## Setup
 
 ### Installation
