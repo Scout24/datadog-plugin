@@ -41,6 +41,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -56,6 +57,14 @@ import java.util.logging.Logger;
 public class DatadogComputerListener extends ComputerListener {
 
     private static final Logger logger = Logger.getLogger(DatadogComputerListener.class.getName());
+
+    private Map<String, Long> computers = new HashMap<String, Long>();
+
+    @Override
+    public void preLaunch(Computer c, TaskListener taskListener) throws IOException, InterruptedException {
+        logger.fine(String.format("DatadogComputerListener.preLaunch: %s, %s", c, taskListener));
+        computers.put(c.getName(), System.currentTimeMillis());
+    }
 
     @Override
     public void onOnline(Computer computer, TaskListener listener) throws IOException, InterruptedException {
@@ -84,6 +93,15 @@ public class DatadogComputerListener extends ComputerListener {
             // Submit counter
             String hostname = DatadogUtilities.getHostname(null);
             client.incrementCounter("jenkins.computer.online", hostname, tags);
+
+            // Calculate bootstrap time
+            if (computers.containsKey(computer.getName())) {
+                long startTime = computers.get(computer.getName());
+                long endTime = System.currentTimeMillis();
+                long duration = (endTime - startTime);
+                client.gauge("jenkins.agent.bootstrap", duration/1000, hostname, tags);
+                client.gauge("jenkins.computer.bootstrap", duration/1000, hostname, tags);
+            }
 
             logger.fine("End DatadogComputerListener#onOnline");
         } catch (Exception e) {
