@@ -6,6 +6,21 @@ A Jenkins plugin for automatically forwarding metrics, events, and service check
 
 **Note**: The [Jenkins CI plugin page][1] for this plugin references this documentation.
 
+## Scout24 specific:
+
+**Why do we have our own fork?**
+
+We historically added feature that weren't there in the upstream datadog plugin. This started out as https://github.com/scout24/fizz-metrics-plugin, but eventually converged again with the upstream plugin, so now we are only a couple patches off the mainline.
+
+**What's added?**
+
+Agent bootstrap time, emitted as jenkins.computer.bootstrap / jenkins.agent.bootstrap - both names since "computer" is the new official wording for all things regarding build nodes in the datadog plugin, but we used "agent" earlier and its used on dashboards.
+
+**Update our Fizz instances to use a new version of this plugin**
+
+- Once you're done with your changes, test them by running: `docker run -it --rm --name my-project -v "$(pwd)":/root -w /root adoptopenjdk/maven-openjdk8:latest mvn verify`.
+- Then, you need to update both [jenkins-datadog-plugin-private](https://github.com/Scout24/jenkins-datadog-plugin-private) and [Fizz-service](https://github.com/Scout24/fizz-service). Follow the [instructions here](https://github.com/Scout24/jenkins-datadog-plugin-private#updating).
+
 ## Setup
 
 ### Installation
